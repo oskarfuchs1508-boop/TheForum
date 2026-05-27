@@ -11,26 +11,27 @@
     "sanity:deploy": "sanity deploy"
   },
   "dependencies": {
-    "next": "^14.2.0",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "next-sanity": "^9.4.0",
+    "@portabletext/react": "^3.0.0",
     "@sanity/client": "^6.18.0",
     "@sanity/image-url": "^1.0.2",
-    "@portabletext/react": "^3.0.0",
-    "sanity": "^3.40.0",
     "@sanity/vision": "^3.40.0",
-    "resend": "^3.2.0",
-    "reading-time": "^1.5.0",
+    "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
-    "clsx": "^2.1.1"
+    "next": "^14.2.0",
+    "next-sanity": "^9.4.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "reading-time": "^1.5.0",
+    "resend": "^3.2.0",
+    "sanity": "^3.40.0"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
+    "@tailwindcss/postcss": "^4.3.0",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "eslint": "^8.0.0",
-    "eslint-config-next": "^14.2.0"
+    "eslint-config-next": "^14.2.0",
+    "typescript": "^5.4.0"
   }
 }
