@@ -7,32 +7,8 @@ export const allArticlesQuery = `
     category,
     publishedAt,
     excerpt,
-    featured
-  }
-`;
-
-export const featuredArticleQuery = `
-  *[_type == "article" && featured == true] | order(publishedAt desc)[0] {
-    _id,
-    title,
-    "slug": slug.current,
-    "author": author->{ name },
-    category,
-    publishedAt,
-    excerpt
-  }
-`;
-
-export const latestArticlesQuery = `
-  *[_type == "article" && featured != true] | order(publishedAt desc)[0...9] {
-    _id,
-    title,
-    "slug": slug.current,
-    "author": author->{ name },
-    category,
-    publishedAt,
-    excerpt,
-    featured
+    featured,
+    coverImage
   }
 `;
 
@@ -45,6 +21,7 @@ export const articleBySlugQuery = `
     category,
     publishedAt,
     excerpt,
+    coverImage,
     body
   }
 `;
