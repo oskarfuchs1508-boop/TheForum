@@ -1,15 +1,30 @@
 import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
-import { MOCK_ARTICLES } from "@/lib/mockData";
+import { sanityClient } from "@/lib/sanity";
+import { allArticlesQuery } from "@/lib/queries";
 import Link from "next/link";
+
+export const revalidate = 60;
 
 const CATEGORIES = ["All", "Politics", "Philosophy", "Economics", "Religion", "History", "Literature", "Interviews", "Societal Trends"];
 
-export default function EssaysPage({ searchParams }: { searchParams: { cat?: string } }) {
+function formatDate(dateStr: string) {
+  if (!dateStr) return "";
+  return new Date(dateStr).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+}
+
+export default async function EssaysPage({ searchParams }: { searchParams: { cat?: string } }) {
+  let articles: any[] = [];
+  try {
+    articles = await sanityClient.fetch(allArticlesQuery);
+  } catch {
+    articles = [];
+  }
+
   const active = searchParams.cat || "All";
-  const articles = active === "All"
-    ? MOCK_ARTICLES
-    : MOCK_ARTICLES.filter(a => a.category.toLowerCase() === active.toLowerCase().replace(" ", "-"));
+  const filtered = active === "All"
+    ? articles
+    : articles.filter((a: any) => a.category?.toLowerCase() === active.toLowerCase().replace(" ", "-"));
 
   return (
     <>
@@ -24,12 +39,7 @@ export default function EssaysPage({ searchParams }: { searchParams: { cat?: str
           Browse by topic or scroll all recent work
         </p>
 
-        {/* Category tabs */}
-        <div style={{
-          display: "flex", gap: 0,
-          borderBottom: "1px solid var(--rule)", marginBottom: "2rem",
-          overflowX: "auto",
-        }}>
+        <div style={{ display: "flex", borderBottom: "1px solid var(--rule)", marginBottom: "2rem", overflowX: "auto" }}>
           {CATEGORIES.map(cat => (
             <Link key={cat} href={cat === "All" ? "/essays" : `/essays?cat=${cat}`} style={{
               fontFamily: "'DM Mono', monospace", fontSize: "0.7rem",
@@ -44,9 +54,14 @@ export default function EssaysPage({ searchParams }: { searchParams: { cat?: str
           ))}
         </div>
 
-        {/* Article list */}
+        {filtered.length === 0 && (
+          <p style={{ color: "var(--ink-muted)", fontFamily: "'DM Mono', monospace", fontSize: "0.8rem" }}>
+            No articles in this category yet.
+          </p>
+        )}
+
         <div>
-          {articles.map(article => (
+          {filtered.map((article: any) => (
             <Link key={article._id} href={`/articles/${article.slug}`} style={{ display: "block" }}>
               <div style={{
                 padding: "1.5rem 0", borderBottom: "1px solid var(--rule)",
@@ -71,16 +86,8 @@ export default function EssaysPage({ searchParams }: { searchParams: { cat?: str
                     {article.excerpt}
                   </p>
                   <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.65rem", letterSpacing: "0.05em", color: "var(--ink-faint)" }}>
-                    {article.author} · {article.date}
+                    {article.author?.name} · {formatDate(article.publishedAt)}
                   </div>
-                </div>
-                <div style={{
-                  fontFamily: "'DM Mono', monospace", fontSize: "0.65rem",
-                  letterSpacing: "0.06em", color: "var(--ink-faint)",
-                  background: "var(--paper-warm)", border: "1px solid var(--rule)",
-                  padding: "4px 10px", borderRadius: "2px", whiteSpace: "nowrap",
-                }}>
-                  {article.readingTime}
                 </div>
               </div>
             </Link>
